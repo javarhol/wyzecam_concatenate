@@ -1,0 +1,47 @@
+#Method for Concatenating and Segmenting Wyze Videos
+##Author: Justin Varholick
+##Date Created: 5.7.2019
+## Last modified: 2.8.2021
+##Source for code: https://trac.ffmpeg.org/wiki/Concatenate 
+
+#First Time
+
+##Install Ubuntu BASH for Windows 10
+https://docs.microsoft.com/en-us/windows/wsl/install-win10 
+##Then go to Windows Store and install Ubuntu
+##install codecs
+###https://itsfoss.com/install-media-codecs-ubuntu/ 
+
+##The first time you run these commands you will have to mkdir (make directory) for the drives
+sudo mkdir /mnt/e
+
+#All other times (once ubuntu is installed)
+
+##All other times you can begin from this point; mounting the drive to Ubuntu
+sudo mount -t drvfs E: /mnt/e #mounts e drive to ubuntu
+sudo mount -t drvfs C: /mnt/c #mounts c drive to ubuntu
+cd /mnt/e/[location of file] #change directory to the location of the files
+# to see the contents of the directory you are in, use the command ls
+
+##Concatenate the files together 
+##You can either choose to concatenate all files within the respective hour directory
+##OR you can concatenate all files in the directory and make a 24 hour long video (this can then be segmented into hour long segments...)
+
+##24hour video
+ffmpeg -f concat -safe 0 -i <(find . -name '*.mp4' -printf "file '$PWD/%p'\n") -c copy output.mp4 #this will output the concatenated file into the directory where the non-concat files are
+ffmpeg -f concat -safe 0 -i <(find . -name '*.mp4' -printf "file '$PWD/%p'\n") -c copy /mnt/c/Users/User/Documents/'Videos for Coding'/"${PWD//\//_}output.mov" #this will put the output wherever you choose
+
+#Segment into 3600sec segments
+ffmpeg -i output.mp4 -c copy -map 0 -f segment -segment_time 3600 -reset_timestamps 1 output_file-%02d.mp4
+
+
+#OtherConcatenate (for each hour within the day folder)
+for d in ./*/ ; do (cd "$d" && ffmpeg -f concat -safe 0 -i <(find . -name '*.mp4' -printf "file '$PWD/%p'\n") -c copy /mnt/e/UF_AcomysVideos/B1_W1/922587/Top/20190801"${PWD//\//_}.mp4"); done
+
+for d in ./*/ ; do (cd "$d" && ffmpeg -f concat -safe 0 -i <(find . -name '*.mp4' -printf "file '$PWD/%p'\n") -c copy /mnt/e/"${PWD//\//_}.mov"); done
+
+for d in ./*/ ; do (cd "$d" && ffmpeg -f concat -safe 0 -i <(find . -name '*.mp4' -printf "file '$PWD/%p'\n") -c copy /mnt/c/Users/User/Documents/'Videos for Coding'/Stroke"${PWD//\//_}.mov"); done
+
+for d in ./*/ ; do (cd "$d" && ffmpeg -f concat -safe 0 -i <(find . -name '*.mp4' -printf "file '$PWD/%p'\n") -c copy /mnt/d/B2_W1_24hrs/990342/990342_Top_"${PWD//\//_}.mp4"); done
+
+
