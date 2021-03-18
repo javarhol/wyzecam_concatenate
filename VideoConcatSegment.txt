@@ -31,17 +31,14 @@ cd /mnt/e/[location of file] #change directory to the location of the files
 ffmpeg -f concat -safe 0 -i <(find . -name '*.mp4' -printf "file '$PWD/%p'\n") -c copy output.mp4 #this will output the concatenated file into the directory where the non-concat files are
 ffmpeg -f concat -safe 0 -i <(find . -name '*.mp4' -printf "file '$PWD/%p'\n") -c copy /mnt/c/Users/User/Documents/'Videos for Coding'/"${PWD//\//_}output.mov" #this will put the output wherever you choose
 
-#Segment into 3600sec segments
+##Segment into 3600sec segments
 ffmpeg -i output.mp4 -c copy -map 0 -f segment -segment_time 3600 -reset_timestamps 1 output_file-%02d.mp4
 
 
-#OtherConcatenate (for each hour within the day folder)
+##Hour long videos
 for d in ./*/ ; do (cd "$d" && ffmpeg -f concat -safe 0 -i <(find . -name '*.mp4' -printf "file '$PWD/%p'\n") -c copy /mnt/e/UF_AcomysVideos/B1_W1/922587/Top/20190801"${PWD//\//_}.mp4"); done
 
-for d in ./*/ ; do (cd "$d" && ffmpeg -f concat -safe 0 -i <(find . -name '*.mp4' -printf "file '$PWD/%p'\n") -c copy /mnt/e/"${PWD//\//_}.mov"); done
 
-for d in ./*/ ; do (cd "$d" && ffmpeg -f concat -safe 0 -i <(find . -name '*.mp4' -printf "file '$PWD/%p'\n") -c copy /mnt/c/Users/User/Documents/'Videos for Coding'/Stroke"${PWD//\//_}.mov"); done
 
-for d in ./*/ ; do (cd "$d" && ffmpeg -f concat -safe 0 -i <(find . -name '*.mp4' -printf "file '$PWD/%p'\n") -c copy /mnt/d/B2_W1_24hrs/990342/990342_Top_"${PWD//\//_}.mp4"); done
 
 
